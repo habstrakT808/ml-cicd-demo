@@ -13,7 +13,11 @@ class IrisClassifier:
     def load_data(self, data_path):
         """Load data dari file CSV"""
         try:
+            if not os.path.exists(data_path):
+                raise FileNotFoundError(f"File tidak ditemukan: {data_path}")
+            
             data = pd.read_csv(data_path)
+            print(f"📊 Data loaded successfully: {data.shape}")
             return data
         except Exception as e:
             raise Exception(f"Error loading data: {e}")
@@ -42,6 +46,13 @@ class IrisClassifier:
     
     def save_model(self, path):
         """Save model ke file"""
-        os.makedirs(os.path.dirname(path), exist_ok=True)
+        # Pastikan directory ada
+        dir_path = os.path.dirname(path)
+        if dir_path and not os.path.exists(dir_path):
+            os.makedirs(dir_path, exist_ok=True)
+            print(f"📁 Created directory: {dir_path}")
+        
+        # Save model
         joblib.dump(self.model, path)
+        print(f"💾 Model saved to: {os.path.abspath(path)}")
         return path
