@@ -47,15 +47,29 @@ def main():
         accuracy = classifier.evaluate(X_test, y_test)
         print(f"✅ Model accuracy: {accuracy:.4f}")
         
-        # Save model - pastikan direktori models ada
-        model_dir = os.path.join(os.path.dirname(__file__), "..", "models")
-        if not os.path.exists(model_dir):
-            # Coba dari root directory
-            model_dir = "models"
+        # Save model - PERBAIKAN: simpan di root/models/, bukan src/models/
+        # Tentukan path ke root directory
+        if os.path.exists("../models"):
+            model_path = "../models/iris_model.pkl"
+        elif os.path.exists("models"):
+            model_path = "models/iris_model.pkl"
+        else:
+            # Buat models directory di root
+            root_models_dir = os.path.join(os.path.dirname(__file__), "..", "models")
+            os.makedirs(root_models_dir, exist_ok=True)
+            model_path = os.path.join(root_models_dir, "iris_model.pkl")
         
-        model_path = os.path.join(model_dir, "iris_model.pkl")
         classifier.save_model(model_path)
         print(f"✅ Model saved to: {os.path.abspath(model_path)}")
+        
+        # Verifikasi file tersimpan
+        abs_model_path = os.path.abspath(model_path)
+        if os.path.exists(abs_model_path):
+            print(f"✅ Model file verified: {abs_model_path}")
+            print(f"📏 Model size: {os.path.getsize(abs_model_path)} bytes")
+        else:
+            print(f"❌ Model file not found after saving: {abs_model_path}")
+            sys.exit(1)
         
         # Quality gate: Model harus punya akurasi minimal 80%
         if accuracy < 0.8:
