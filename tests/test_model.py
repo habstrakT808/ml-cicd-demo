@@ -1,9 +1,14 @@
 import pytest
 import pandas as pd
 import numpy as np
-from src.model import IrisClassifier
-import tempfile
+import sys
 import os
+
+# Tambahkan src directory ke Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
+from model import IrisClassifier
+import tempfile
 
 class TestIrisClassifier:
     
